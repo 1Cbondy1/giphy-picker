@@ -1,25 +1,19 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { fetchGifs } from '@/lib/fetchGifs';
+import GifCard from './GifCard';
+import NavButton from './NavButton';
+import { useState, useEffect } from 'react';
 
-export default function GifGrid({ query }) {
-	const [gifs, setGifs] = useState([]);
-	const [error, setError] = useState(null);
+export default function GifGrid({
+	gifPages,
+	currentPage,
+	setCurrentPage,
+	handleLoadMore,
+	query
+}) {
 	const [copiedId, setCopiedId] = useState(null);
 
 	useEffect(() => {
-		if (!query) return;
-
-		const loadGifs = async () => {
-			try {
-				const data = await fetchGifs(query);
-				setGifs(data);
-			} catch (err) {
-				setError(err.message || 'Something went wrong');
-			}
-		};
-
-		loadGifs();
+		setCopiedId(null); // reset copied state when query changes
 	}, [query]);
 
 	const handleCopy = async (gif) => {
@@ -32,53 +26,43 @@ export default function GifGrid({ query }) {
 		}
 	};
 
-	if (!query) return null;
+	const gifs = gifPages[currentPage] || [];
 
 	return (
-		<div
-			className="w-full max-w-[1280px] px-4 mx-auto"
-			style={{
-				columnWidth: '300px',
-				columnGap: '1rem',
-				minHeight: 'calc(100vh - 160px)',
-			}}
-		>
-			{error && (
-				<p className="text-red-600 text-center col-span-full">{error}</p>
-			)}
-			{gifs.map((gif) => {
-				const mp4 = gif?.images?.preview?.mp4;
-				if (!mp4) return null;
-
-				const isCopied = copiedId === gif.id;
-
-				return (
-					<div
-						key={gif.id}
-						className="relative mb-4 break-inside-avoid w-full cursor-pointer"
-						onClick={() => handleCopy(gif)}
-					>
-						<video
-							src={mp4}
-							autoPlay
-							loop
-							muted
-							playsInline
-							className={`rounded shadow w-full transition-all duration-300 ${
-								isCopied
-									? 'outline outline-4 outline-green-500 animate-outline-draw'
-									: ''
-							}`}
-						/>
-
-                        {isCopied && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-lg font-semibold rounded animate-fade-overlay">
-                                Copied to Clipboard
-                            </div>
-                        )}
+		<div className="w-full max-w-[1280px] px-4 mx-auto flex">
+			{/* Left Button */}
+			<div className="w-[80px] flex justify-center">
+				{currentPage > 0 && (
+					<div className="fixed left-4 w-[80px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
+						<NavButton color="gray" onClick={() => setCurrentPage(currentPage - 1)}>←</NavButton>
 					</div>
-				);
-			})}
+				)}
+			</div>
+
+			{/* Center GIF Grid */}
+			<div className="flex-1 [column-width:250px] [column-gap:1rem] min-h-[calc(100vh-160px)]">
+				{gifs.map((gif) => (
+					<GifCard
+						key={gif.id}
+						gif={gif}
+						isCopied={copiedId === gif.id}
+						onCopy={handleCopy}
+					/>
+				))}
+			</div>
+
+			{/* Right Button */}
+			<div className="w-[80px] flex justify-center">
+				<div className="fixed right-4 w-[80px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
+                    {query !== '__RANDOM__' && (
+                        currentPage < gifPages.length - 1 ? (
+                            <NavButton onClick={() => setCurrentPage(currentPage + 1)}>→</NavButton>
+                        ) : (
+                            <NavButton color="green" onClick={handleLoadMore}>→</NavButton>
+                        )
+                    )}
+				</div>
+			</div>
 		</div>
 	);
 }
