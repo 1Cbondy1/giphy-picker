@@ -30,7 +30,7 @@ export default function SearchBar() {
 			value={inputValue}
 			onChange={(e) => setInputValue(e.target.value)}
 			placeholder="Search GIFs"
-			className="w-full max-w-md px-4 py-2 mb-6 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600"
+			className="w-full max-w-md px-4 py-2 mb-6 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-outline text-black"
 		/>
 	);
 }

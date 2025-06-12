@@ -16,9 +16,9 @@ export default function GifCard({ gif, isCopied, onCopy }) {
 				loop
 				muted
 				playsInline
-				className={`rounded shadow w-full transition-all duration-300 ${
+				className={`rounded shadow w-full transition-opacity duration-300 ${
 					isCopied
-						? 'outline outline-4 outline-green-500 animate-outline-draw'
+						? 'outline outline-4 outline-outline animate-outline-draw'
 						: ''
 				}`}
 			/>

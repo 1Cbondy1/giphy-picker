@@ -8,6 +8,8 @@ import SearchBar from '@/components/SearchBar';
 import GifGrid from '@/components/GifGrid';
 import SearchTag from '@/components/SearchTag';
 
+import { SearchTags } from '@/lib/constants';
+
 export default function HomePage() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
@@ -25,7 +27,7 @@ export default function HomePage() {
 	// Load GIFs on query change (or random GIFs if no query)
 	useEffect(() => {
 		const run = async () => {
-			const key = queryParam || '__RANDOM__';
+			const key = queryParam || SearchTags.RANDOM;
 
 			setInput(queryParam);
 			setActiveQuery(key);
@@ -53,6 +55,9 @@ export default function HomePage() {
 
 		run();
 	}, [queryParam]);
+
+    console.log(searchData);
+    console.log(activeQuery);
 
 	// Push new search to URL, triggering effect above
 	const handleSubmit = (e) => {
@@ -95,8 +100,8 @@ export default function HomePage() {
 	};
 
 	return (
-		<main className="flex min-h-screen flex-col items-center p-4">
-			<h1 className="text-2xl font-bold mb-4">GIF Picker</h1>
+		<main className="flex min-h-screen flex-col items-center pb-8">
+			<h1 className="text-5xl font-heading font-bold tracking-widest m-8">GIF Picker</h1>
 
 			{/* Search input and submit handler */}
 			<SearchBar input={input} setInput={setInput} onSubmit={handleSubmit} />
@@ -104,7 +109,7 @@ export default function HomePage() {
 			{/* Render clickable query tags, excluding random results */}
 			<div className="mb-6 flex flex-wrap justify-center">
 				{Object.keys(searchData)
-					.filter((query) => query !== '__RANDOM__')
+					.filter((query) => query !== SearchTags.RANDOM)
 					.map((query) => (
 						<SearchTag
 							key={query}

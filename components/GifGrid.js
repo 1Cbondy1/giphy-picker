@@ -1,7 +1,10 @@
 'use client';
 import { useState } from 'react';
+
 import GifCard from './GifCard';
 import NavButton from './NavButton';
+
+import { SearchTags, NavButtonType } from '@/lib/constants';
 
 export default function GifGrid({
 	gifPages,
@@ -17,13 +20,13 @@ export default function GifGrid({
 	if (!gifPages || gifPages.length === 0) return null;
 
 	const currentGifs = gifPages[currentPage] || [];
-	const isRandom = query === '__RANDOM__';
+	const isRandom = query === SearchTags.RANDOM;
 
     const handleCopy = async (gif) => {
         try {
             await navigator.clipboard.writeText(gif.images.preview.mp4);
             setCopiedId(gif.id);
-            setTimeout(() => setCopiedId(null), 3000);
+            setTimeout(() => setCopiedId(null), 1500);
         } catch (err) {
             console.error('Failed to copy:', err);
         }
@@ -32,10 +35,10 @@ export default function GifGrid({
 	return (
 		<div className="w-full max-w-[1280px] px-4 mx-auto flex">
 			{/* Left Navigation Column */}
-			<div className="w-[80px] flex justify-center">
+			<div className="w-[100px] flex justify-center">
 				{!isRandom && currentPage > 0 && (
-					<div className="fixed left-4 w-[80px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
-						<NavButton color="gray" onClick={() => setCurrentPage(currentPage - 1)}>
+					<div className="fixed left-2 w-[100px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
+						<NavButton type={NavButtonType.NAV} onClick={() => setCurrentPage(currentPage - 1)}>
 							←
 						</NavButton>
 					</div>
@@ -55,13 +58,13 @@ export default function GifGrid({
 			</div>
 
 			{/* Right Navigation Column */}
-			<div className="w-[80px] flex justify-center">
+			<div className="w-[100px] flex justify-center">
 				{!isRandom && (
-					<div className="fixed right-4 w-[80px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
+					<div className="fixed right-2 w-[100px] top-1/2 -translate-y-1/2 z-50 flex justify-center">
 						{currentPage < gifPages.length - 1 ? (
-							<NavButton onClick={() => setCurrentPage(currentPage + 1)}>→</NavButton>
+							<NavButton type={NavButtonType.NAV} onClick={() => setCurrentPage(currentPage + 1)}>→</NavButton>
 						) : (
-							<NavButton color="green" onClick={handleLoadMore}>→</NavButton>
+							<NavButton type={NavButtonType.LOAD} onClick={handleLoadMore}>→</NavButton>
 						)}
 					</div>
 				)}

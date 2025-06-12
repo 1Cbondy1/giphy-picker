@@ -1,13 +1,15 @@
 'use client';
 import React from 'react';
 
-export default function NavButton({ color = 'gray', onClick, children }) {
-	const baseColor = color === 'gray' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-green-600 hover:bg-green-500';
+import { NavButtonType } from '@/lib/constants';
+
+export default function NavButton({ type, onClick, children }) {
+	const baseColor = type === NavButtonType.NAV ? 'bg-primary hover:bg-primaryHover text-black' : 'bg-secondary hover:bg-secondaryHover';
 
 	return (
 		<button
 			onClick={onClick}
-			className={`w-12 h-12 rounded-full text-2xl text-white shadow ${baseColor} flex items-center justify-center`}
+			className={`cursor-pointer w-12 h-12 rounded-full text-2xl shadow ${baseColor} flex items-center justify-center`}
 		>
 			{children}
 		</button>
